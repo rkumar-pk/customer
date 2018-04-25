@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="db:database(/iibdb.dbm,iibdb,db:schema-tables(iibdb,customer))" var="iibdb1"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var2"/>
+    <output derivedFrom="MB:JSON_schema_in_swagger_document" path="/swagger.json" var="var3"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/iib/msl/json"/>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="getCustomers_Mapping">
+        <input path="$iibdb1/db:select(fn:false(),ResultSet(iibdb/customer/firstname,iibdb/customer/lastname,iibdb/customer/customerid),db:where('1=1'))" var="dbselect"/>
+        <output namespace="http://www.ibm.com/iib/msl/json" path="$var2/mb:msg(JSON,assembly,JSON,Properties)">
+            <cast derivedFrom="MB:JSON_operation_response" path="JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}JSONArray_customer" ref="var3"/>
+        </output>
+        <select ref="dbselect">
+            <input path="$dbselect/ResultSet"/>
+            <output path="JSON/spath('Data',2)"/>
+            <foreach>
+                <input path="."/>
+                <output path="Item"/>
+                <move>
+                    <input path="iibdb/customer/firstname"/>
+                    <output path="firstname"/>
+                </move>
+                <move>
+                    <input path="iibdb/customer/lastname"/>
+                    <output path="lastname"/>
+                </move>
+                <move>
+                    <input path="iibdb/customer/customerid"/>
+                    <output path="customerid"/>
+                </move>
+            </foreach>
+        </select>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,101 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "title" : "Customer",
+    "version" : "1.0.0",
+    "description" : "Customer"
+  },
+  "paths" : {
+    "/customers" : {
+      "get" : {
+        "operationId" : "getCustomers",
+        "responses" : {
+          "200" : {
+            "description" : "The operation was successful.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/customer"
+              }
+            }
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Retrieve customers",
+        "parameters" : [ {
+          "name" : "max",
+          "in" : "query",
+          "type" : "string"
+        } ]
+      },
+      "post" : {
+        "operationId" : "postCustomers",
+        "responses" : {
+          "201" : {
+            "description" : "Customer Entry created"
+          }
+        },
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "description" : "Insert a customers",
+        "parameters" : [ {
+          "name" : "body",
+          "in" : "body",
+          "schema" : {
+            "$ref" : "#/definitions/customer"
+          },
+          "description" : "The request body for the operation",
+          "required" : true
+        } ]
+      },
+      "put" : {
+        "operationId" : "putCustomers",
+        "responses" : {
+          "200" : {
+            "description" : "The operation was successful."
+          }
+        },
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "description" : "Update customers",
+        "parameters" : [ {
+          "name" : "body",
+          "in" : "body",
+          "schema" : {
+            "$ref" : "#/definitions/customer"
+          },
+          "description" : "The request body for the operation",
+          "required" : true
+        } ]
+      },
+      "delete" : {
+        "operationId" : "deleteCustomers",
+        "responses" : {
+          "200" : {
+            "description" : "The operation was successful."
+          }
+        },
+        "produces" : [ "application/json" ],
+        "description" : "Remove from customers"
+      }
+    }
+  },
+  "basePath" : "/customer/v1",
+  "definitions" : {
+    "customer" : {
+      "type" : "object",
+      "properties" : {
+        "firstname" : {
+          "type" : "string",
+          "format" : null
+        },
+        "lastname" : {
+          "type" : "string"
+        },
+        "customerid" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}

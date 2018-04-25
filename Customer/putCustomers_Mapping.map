@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var"/>
+    <input derivedFrom="MB:JSON_schema_in_swagger_document" path="/swagger.json" var="var1"/>
+    <input path="jar:file://!com/ibm/msl/mapping/rdb/xsds/dbreturn.xsd" var="var2"/>
+    <output path="db:table(/iibdb.dbm,iibdb,iibdb,customer)" var="customer"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/iib/msl/json"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="putCustomers_Mapping">
+        <input derivedFrom="MB:JSON_operation_name:putCustomers" namespace="http://www.ibm.com/iib/msl/json" path="$var/mb:msg(JSON,assembly,JSON,Properties,LocalEnvironment)" var="ComIbmMessageAssembly_JSON">
+            <cast derivedFrom="MB:JSON_operation_request" path="$ComIbmMessageAssembly_JSON/JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}customer" ref="var1"/>
+        </input>
+        <output path="$customer/db:update(fn:false(),fn:true(),db:where('iibdb.customer.customerid =  ?','?'=$ComIbmMessageAssembly_JSON/in:JSON//Data/customerid),firstname,lastname,customerid,customer_id,store_id,first_name,last_name,email,address_id,active,create_date,last_update)" var="dbupdate"/>
+        <transaction>
+            <update ref="dbupdate">
+                <input path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)" var="Data"/>
+                <output path="$dbupdate/."/>
+                <move>
+                    <input path="$Data/firstname"/>
+                    <output path="firstname"/>
+                </move>
+                <move>
+                    <input path="$Data/lastname"/>
+                    <output path="lastname"/>
+                </move>
+                <move>
+                    <input path="$Data/customerid"/>
+                    <output path="customerid"/>
+                </move>
+            </update>
+            <return>
+                <input path="$var2/DBUpdateReturn"/>
+            </return>
+        </transaction>
+    </mappingDeclaration>
+</mappingRoot>
